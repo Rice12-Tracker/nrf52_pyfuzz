@@ -3,17 +3,16 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-# Use pwd to get the current working directory
-current_dir=$(
-current
-pwd)
-# Use parameter expansion to extract the folder name
-folder_name="${current_dir##*/}"
-
-cd ../AFLplusplus/unicorn_mode
-cp -r ../../$folder_name .
+folder_name=$1
 cd $folder_name
-../../afl-fuzz -U -m none -i ./"$1_input" -o ./"$1_output" -- python "$1.py" @@
-cp -r "$1_output" ../../../$folder_name
-cd ..
-#rm -r $folder_name
+cp ../emulator.py . || exit
+cp -r ../data . 
+cd ../../AFLplusplus/unicorn_mode || exit
+cp -r ../../pyfuzz/$folder_name . || exit
+cd $folder_name || exit
+../../afl-fuzz -U -m none -i ./"${folder_name}_input" -o ./"${folder_name}_output" -- python "${folder_name}.py" @@
+cp -r "${folder_name}_output" ../../../pyfuzz/$folder_name
+cd ../
+rm -r $folder_name
+cd ../../pyfuzz/$folder_name
+rm -r data emulator.py
