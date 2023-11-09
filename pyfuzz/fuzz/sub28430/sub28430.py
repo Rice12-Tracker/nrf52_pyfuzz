@@ -46,9 +46,9 @@ input_fanme=args.input_file
 exits=[0x000284fe]
 
 def place_input_callback(uc, input, persistent_round, data):
-    if len(input)!=8:
+    if len(input)!=44:
         return False
-    uc.reg_write(UC_ARM_REG_R2, int.from_bytes(input[:4],'little'))
-    uc.reg_write(UC_ARM_REG_R3, int.from_bytes(input[4:8],'little'))
+    for i in range(11):
+        uc.reg_write(globals()[f'UC_ARM_REG_R{i+2}'],int.from_bytes(input[4*i:4*i+4],'little'))
 
 emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback)
