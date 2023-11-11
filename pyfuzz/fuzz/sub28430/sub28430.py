@@ -39,16 +39,18 @@ reg_data[UC_ARM_REG_FPSCR]=0x0
 reg_data[UC_ARM_REG_MSP]=0x2001fc78
 
 mem_data={}
-mem_data[reg_data[UC_ARM_REG_R1]]=b'\x02'
+#mem_data[reg_data[UC_ARM_REG_R1]]=b'\x02'
 
 ram_fname='data/sram_1104.bin'
 input_fanme=args.input_file
 exits=[0x000284fe]
 
 def place_input_callback(uc, input, persistent_round, data):
-    if len(input)!=44:
+    if len(input)!=52:
         return False
-    for i in range(11):
-        uc.reg_write(globals()[f'UC_ARM_REG_R{i+2}'],int.from_bytes(input[4*i:4*i+4],'little'))
+    for i in range(3):
+        uc.mem_write(reg_data[UC_ARM_REG_R1+4*i],input[4*i:4*i+4])
+    for i in range(3,12):
+        uc.reg_write(globals()[f'UC_ARM_REG_R{i-1}'],int.from_bytes(input[4*i:4*i+4],'little'))
 
 emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback)
