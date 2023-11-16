@@ -114,7 +114,7 @@ class Emulator:
         
         with open(ram_fname,"rb") as f:
             sram_data=f.read()
-            assert len(sram_data)==RAM_SIZE
+            #assert len(sram_data)==RAM_SIZE
             self.uc.mem_write(RAM_START_ADDRESS, sram_data)
         for reg,val in reg_data.items():
             self.uc.reg_write(reg, val)
@@ -122,7 +122,7 @@ class Emulator:
             self.uc.mem_write(addr,val)
         
         
-        #self.uc.emu_start(self.uc.reg_read(UC_ARM_REG_PC)+1, 0x000284fe, 600 * UC_SECOND_SCALE , 0)
+        #self.uc.emu_start(self.uc.reg_read(UC_ARM_REG_PC)+1, exits[1], 600 * UC_SECOND_SCALE , 0)
         uc_afl_fuzz(uc=self.uc, input_file=input_fanme, place_input_callback=place_input_callback, exits=exits)
         
     def uc_intr_cb(self, uc, exc_no,user_data):

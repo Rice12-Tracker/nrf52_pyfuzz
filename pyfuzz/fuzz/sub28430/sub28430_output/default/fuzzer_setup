@@ -1,0 +1,6 @@
+# environment variables:
+AFL_CUSTOM_INFO_PROGRAM=python3
+AFL_CUSTOM_INFO_PROGRAM_ARGV=sub28430.py @@
+AFL_CUSTOM_INFO_OUT=./sub28430_output/default
+# command line:
+'../../afl-fuzz' '-U' '-m' 'none' '-i' './sub28430_input' '-o' './sub28430_output' '--' 'python3' 'sub28430.py' '@@'
