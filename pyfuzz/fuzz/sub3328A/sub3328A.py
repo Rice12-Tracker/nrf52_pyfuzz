@@ -43,6 +43,7 @@ reg_data[UC_ARM_REG_PRIMASK]=0
 reg_data[UC_ARM_REG_BASEPRI]=0
 reg_data[UC_ARM_REG_FAULTMASK]=0
 reg_data[UC_ARM_REG_CONTROL]=0
+
 mem_data={}
 ram_fname='data/sub_3328A_sram.bin'
 exits=[0x332A8,0x332F8,0x332E4]

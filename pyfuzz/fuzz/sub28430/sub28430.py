@@ -16,6 +16,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 emu = Emulator('data/samsung_tag1.flash.bin', 0x0)
+input_fanme=args.input_file
 
 reg_data={}
 reg_data[UC_ARM_REG_R0]=0x20008d00
@@ -39,10 +40,8 @@ reg_data[UC_ARM_REG_FPSCR]=0x0
 reg_data[UC_ARM_REG_MSP]=0x2001fc78
 
 mem_data={}
-#mem_data[reg_data[UC_ARM_REG_R1]]=b'\x02'
 
 ram_fname='data/sram_1104.bin'
-input_fanme=args.input_file
 exits=[0x000284fe]
 
 def place_input_callback(uc, input, persistent_round, data):
