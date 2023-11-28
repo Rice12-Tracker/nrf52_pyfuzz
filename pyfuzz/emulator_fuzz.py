@@ -72,6 +72,7 @@ class Emulator:
         self.func_stack=[]
         self.funcs=1
         self.lr = 0
+        self.protect =[]
         
         self.cs = Cs(CS_ARCH_ARM, CS_MODE_THUMB | CS_MODE_MCLASS)
         self.cs.detail = True
@@ -101,13 +102,20 @@ class Emulator:
         # special value for EXC_RETURN
         self.uc.mem_map(0xfffff000, 0x1000)
 
+        # input
+        self.uc.mem_map(0xdead0000, 0x1000)
+
         # setup uc hooks
         self.uc.hook_add(UC_HOOK_INTR, self.uc_intr_cb)        
         self.uc.hook_add(UC_HOOK_BLOCK, self.uc_mem_block_cb, begin=0xfffff000, end=0xffffffff)
+        self.uc.hook_add(UC_HOOK_BLOCK, self.uc_dec, begin=0x23288+4, end=0x23288+8)
+        self.uc.hook_add(UC_HOOK_MEM_WRITE, self.uc_mem_cb)
         
         
     
-    def start(self,reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback):
+    def start(self,reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback,protect=None):
+        if protect:
+            self.protect=protect
         # subscribe to TASKS_RXEN envet from radio
         self.uc.reg_write(UC_ARM_REG_MSP, self.vector_table['initial_sp'])
         self.uc.reg_write(UC_ARM_REG_PC, self.vector_table['reset_handler'])
@@ -131,3 +139,17 @@ class Emulator:
 
     def uc_mem_block_cb(self, uc, address, size, data):
         interrupt_return(uc)
+    
+    def uc_code_cb(self, uc, addr, size, user_data):
+        pass
+    
+    def uc_dec(self, uc, address, size, data):
+        input_data=uc.mem_read(0xdead0000,0x100)
+        uc.mem_write(uc.reg_read(UC_ARM_REG_R2),input_data)
+        uc.reg_write(UC_ARM_REG_PC,0x232E8+1)
+    
+    def uc_mem_cb(self, uc, access, address, size, value, user_data):
+        for prot in self.protect:
+            if address+size<prot[0] or prot[1]<=address:
+                continue
+            uc.mem_write(0xdeadbeef,b'dead')

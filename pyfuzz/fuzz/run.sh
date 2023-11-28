@@ -5,7 +5,7 @@ fi
 
 folder_name=$1
 cd $folder_name
-cp ../../emulator.py . || exit
+cp ../../emulator_fuzz.py emulator.py || exit
 cp -r ../../data . 
 cd ../../../AFLplusplus/unicorn_mode || exit
 cp -r ../../pyfuzz/fuzz/$folder_name . || exit

@@ -49,9 +49,11 @@ ram_fname='data/sub_33A6C_sram.bin'
 
 exits=[0x33BA6,0x33A92]
 def place_input_callback(uc, input, persistent_round, data):
-    if len(input)!=16+208:
+    if len(input)<16+208 or 16+208+0x100<len(input):
         return False
     uc.mem_write(reg_data[UC_ARM_REG_R0],input[:16])
-    uc.mem_write(reg_data[UC_ARM_REG_R1],input[-208:])
+    uc.mem_write(reg_data[UC_ARM_REG_R1],input[16:16+208])
+    uc.mem_write(0xdead0000,input[16+208:])
 
-emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback)
+protect=[(537001636, 537001648), (537002164, 537002176)]
+emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback,protect)

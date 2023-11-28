@@ -53,4 +53,5 @@ def place_input_callback(uc, input, persistent_round, data):
         return False
     uc.mem_write(reg_data[UC_ARM_REG_R0],input)
 
-emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback)
+protect=[(537001636, 537001648), (537002164, 537002176)]
+emu.start(reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback,protect)
