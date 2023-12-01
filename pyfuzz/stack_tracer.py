@@ -111,7 +111,7 @@ class Emulator:
         
         
     
-    def start(self,reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback):
+    def start(self,reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback,protect):
         self.uc.reg_write(UC_ARM_REG_MSP, self.vector_table['initial_sp'])
         self.uc.reg_write(UC_ARM_REG_PC, self.vector_table['reset_handler'])
         
