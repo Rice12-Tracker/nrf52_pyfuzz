@@ -109,13 +109,16 @@ class Emulator:
         self.uc.hook_add(UC_HOOK_INTR, self.uc_intr_cb)        
         self.uc.hook_add(UC_HOOK_BLOCK, self.uc_mem_block_cb, begin=0xfffff000, end=0xffffffff)
         self.uc.hook_add(UC_HOOK_BLOCK, self.uc_dec, begin=0x23288+4, end=0x23288+8)
-        self.uc.hook_add(UC_HOOK_MEM_WRITE, self.uc_mem_cb)
+        #self.uc.hook_add(UC_HOOK_MEM_WRITE, self.uc_mem_cb)
         
         
     
     def start(self,reg_data,mem_data,ram_fname,input_fanme,exits,place_input_callback,protect=None):
         if protect:
             self.protect=protect
+            prot_min=min([_[0] for _ in protect])
+            prot_max=max([_[1] for _ in protect])
+            self.uc.hook_add(UC_HOOK_MEM_WRITE, self.uc_mem_cb, begin = prot_min, end = prot_max)
         # subscribe to TASKS_RXEN envet from radio
         self.uc.reg_write(UC_ARM_REG_MSP, self.vector_table['initial_sp'])
         self.uc.reg_write(UC_ARM_REG_PC, self.vector_table['reset_handler'])
